@@ -1,8 +1,8 @@
 
 <p align="center">
-  <a href="https://laravel.com" target="_blank">
- 
-  </a>
+  
+ <img src="file:///C:/Users/Dominik.Kovac/Downloads/ChatGPT%20Image%204.%2011.%202025,%2013_11_46.png" width="400" alt="Laravel Logo"></a></p>
+  
 </p>
 
 # 🎟️ Eventzo – Predaj vstupeniek
@@ -28,11 +28,11 @@ Projekt je vytvorený ako školský projekt s dôrazom na prehľadnosť, jednodu
 
 | Technológia | Popis |
 |--------------|--------|
-| **Laravel 11** | PHP framework pre backend |
-| **Bootstrap 5** | Frontend framework |
-| **MySQL** | Relačná databáza |
+| **Laravel 11** | PHP backend |
+| **Bootstrap 5** | Frontend |
+| **MySQL** | Databáza |
 | **Blade** | Šablónovací systém Laravelu |
-| **Eloquent ORM** | Práca s databázou |
+
 
 ---
 
