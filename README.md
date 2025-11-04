@@ -1,1 +1,44 @@
 
+<p align="center">
+  <a href="https://laravel.com" target="_blank">
+    <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo">
+  </a>
+</p>
+
+# 🎟️ Eventzo – Predaj vstupeniek
+
+**Eventzo** je moderná webová aplikácia postavená na **Laravel 11** a **Bootstrap 5**, ktorá umožňuje správu a predaj vstupeniek na rôzne podujatia.  
+Projekt je vytvorený ako školský projekt s dôrazom na prehľadnosť, jednoduchosť a bezpečnosť.
+
+---
+
+## 🚀 Funkcie
+
+- 🗓️ Správa podujatí (vytváranie, úprava, mazanie)  
+- 🎫 Nákup a správa vstupeniek  
+- 🧍‍♂️ Autentifikácia používateľov (registrácia, prihlásenie)  
+- 🧾 Prehľad objednávok používateľa  
+- 💳 Platobná logika (napr. simulácia checkout procesu)  
+- 📱 Responzívny dizajn v **Bootstrap 5**  
+- 🔒 Overenie používateľov a prístup k funkciám podľa roly (admin / user)  
+
+---
+
+## 🧩 Použité technológie
+
+| Technológia | Popis |
+|--------------|--------|
+| **Laravel 11** | PHP framework pre backend |
+| **Bootstrap 5** | Frontend framework |
+| **MySQL** | Relačná databáza |
+| **Blade** | Šablónovací systém Laravelu |
+| **Eloquent ORM** | Práca s databázou |
+
+---
+
+## ⚙️ Inštalácia
+
+1. **Klonuj repozitár:**
+   ```bash
+   git clone https://github.com/tvoj-username/eventzo.git
+   cd eventzo
