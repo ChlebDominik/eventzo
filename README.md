@@ -1,7 +1,8 @@
 
 <p align="center">
   
- <img src="file:///C:/Users/Dominik.Kovac/Downloads/ChatGPT%20Image%204.%2011.%202025,%2013_11_46.png" width="400" alt="Laravel Logo"></a></p>
+ <img width="400" height="400" alt="7i58pduh" src="https://github.com/user-attachments/assets/705ab97e-3a39-4fba-b485-d8f6a3d20332" />
+
   
 </p>
 
