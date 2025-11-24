@@ -22,9 +22,9 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'name' => 'required|min:3|max:50',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6|confirmed',
+            'name' => 'required|string|min:2|max:80',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed'
         ]);
 
         $user = User::create([
@@ -35,7 +35,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect('/')->with('success', 'Účet bol úspešne vytvorený!');
+        return redirect()->route('events.index')->with('success', 'Účet vytvorený. Vitaj v Eventzo!');
     }
 
     public function login(Request $request)
@@ -45,14 +45,12 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
-            return redirect('/')->with('success', 'Vitaj späť!');
+            return redirect()->intended(route('events.index'))->with('success', 'Prihlásenie úspešné.');
         }
 
-        return back()->withErrors([
-            'email' => 'Nesprávny email alebo heslo.',
-        ]);
+        return back()->withErrors(['email' => 'Neplatné prihlasovacie údaje.'])->withInput();
     }
 
     public function logout(Request $request)
@@ -60,6 +58,6 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/login');
+        return redirect()->route('home');
     }
 }

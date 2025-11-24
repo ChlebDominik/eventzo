@@ -2,24 +2,28 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Event;
+use Carbon\Carbon;
 
-class DatabaseSeeder extends Seeder
+class EventSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        Event::create([
+            'title' => 'Summer Beats',
+            'description' => 'Letný open-air festival s DJ-mi.',
+            'location' => 'Bratislava',
+            'start_date' => Carbon::now()->addDays(14),
+            'capacity' => 500,
+        ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        Event::create([
+            'title' => 'Tech Meetup',
+            'description' => 'Prednášky o modernom vývoji.',
+            'location' => 'Košice',
+            'start_date' => Carbon::now()->addDays(30),
+            'capacity' => 150,
         ]);
     }
 }
