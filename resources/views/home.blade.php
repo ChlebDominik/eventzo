@@ -19,9 +19,9 @@
 
     <div class="col-lg-5 text-center mt-4 mt-lg-0">
       <div class="card p-3">
-        <img src="https://images.unsplash.com/photo-1515165562835-cf1f2b1f2f4d?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=7c2b3b2a6b4d3e2b9a3a5f0f7f8a1c2d" alt="event" class="img-fluid rounded" style="max-height:260px; object-fit:cover;">
+        <img src="/img/IMG.png" alt="event" class="img-fluid rounded" style="max-height:260px; object-fit:cover;">
         <div class="p-3">
-          <h5 class="mb-1">Predstavovaný event</h5>
+          <h5 class="mb-1">Rap Concert</h5>
           <p class="muted small mb-0">Bratislava · 25. jún 2025</p>
         </div>
       </div>
