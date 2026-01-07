@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Event;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Carbon\Carbon;
 
 class EventController extends Controller
 {
@@ -17,16 +16,20 @@ class EventController extends Controller
 
     public function show(Event $event)
     {
+        $event->load('ticketTypes', 'organizer');
         return view('events.show', compact('event'));
     }
 
     public function create()
     {
+        $this->authorize('create', Event::class);
         return view('events.create');
     }
 
     public function store(Request $request)
     {
+        $this->authorize('create', Event::class);
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -36,22 +39,34 @@ class EventController extends Controller
             'image' => 'nullable|image|max:5120'
         ]);
 
+        $validated['organizer_id'] = $request->user()->id;
+
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('events', 'public');
         }
 
-        Event::create($validated);
+        $event = Event::create($validated);
 
-        return redirect()->route('events.index')->with('success', 'Event vytvorený.');
+        // default ticket type (aby hneď šlo kupovať)
+        $event->ticketTypes()->create([
+            'name' => 'Standard',
+            'price_cents' => 0,
+            'quantity' => (int) $event->capacity,
+        ]);
+
+        return redirect()->route('events.show', $event)->with('success', 'Event vytvorený.');
     }
 
     public function edit(Event $event)
     {
+        $this->authorize('update', $event);
         return view('events.edit', compact('event'));
     }
 
     public function update(Request $request, Event $event)
     {
+        $this->authorize('update', $event);
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -70,11 +85,13 @@ class EventController extends Controller
 
         $event->update($validated);
 
-        return redirect()->route('events.index')->with('success', 'Event upravený.');
+        return redirect()->route('events.show', $event)->with('success', 'Event upravený.');
     }
 
     public function destroy(Event $event)
     {
+        $this->authorize('delete', $event);
+
         if ($event->image) {
             Storage::disk('public')->delete($event->image);
         }
