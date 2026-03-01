@@ -8,9 +8,9 @@
 <section class="bg-dark text-white text-center py-5">
     <div class="container">
         <h1 class="display-4 fw-bold">EventZo</h1>
-        <p class="lead">Modern solution for event management and digital ticketing</p>
+        <p class="lead">Moderné riešenie pre event managment a digital ticketing</p>
         <a href="{{ route('register') }}" class="btn btn-primary btn-lg mt-3">
-            Get Started
+            Začnime
         </a>
     </div>
 </section>
@@ -21,18 +21,18 @@
         <div class="row text-center">
 
             <div class="col-md-4">
-                <h3>Create Events</h3>
-                <p>Easily create and manage events with full control over participants and details.</p>
+                <h3>Vytvorte podujatia</h3>
+                <p>Jednoducho manažujte a vytvarajte podujatia s plnou kontrolou nad účastnikmi a detailami.</p>
             </div>
 
             <div class="col-md-4">
-                <h3>QR Tickets</h3>
-                <p>Automatically generate secure QR codes for fast and contactless entry.</p>
+                <h3>QR Lístky</h3>
+                <p>Automaticky sa vygeneruje bezpečný QR kód pre rýchlý a bezdotykový vstup.</p>
             </div>
 
             <div class="col-md-4">
-                <h3>Responsive Design</h3>
-                <p>Access your dashboard from desktop, tablet, or mobile device.</p>
+                <h3>Responzívny design</h3>
+                <p>Prístup k ovládaciemu panelu z počítača, tabletu alebo mobilného zariadenia.</p>
             </div>
 
         </div>
@@ -42,11 +42,11 @@
 <!-- WHY CHOOSE US -->
 <section class="bg-dark py-5">
     <div class="container text-center">
-        <h2>Why Choose EventZo?</h2>
+        <h2>Prečo si vybrať EventZo?</h2>
         <p class="mt-3">
-            EventZo combines simplicity, security, and flexibility.
-            It is built using modern technologies like Laravel and Bootstrap,
-            ensuring performance and scalability.
+            EventZo kombinuje jednoduchosť, bezpečnosť a flexibilitu.
+Je vytvorený s využitím moderných technológií ako Laravel a Bootstrap,
+čo zabezpečuje výkon a škálovateľnosť.
         </p>
     </div>
 </section>
@@ -54,9 +54,9 @@
 <!-- CALL TO ACTION -->
 <section class="text-center py-5">
     <div class="container">
-        <h2>Start Managing Your Events Today</h2>
+        <h2>Začnite spravovať svoje podujatia ešte dnes</h2>
         <a href="{{ route('register') }}" class="btn btn-success btn-lg mt-3">
-            Create Free Account
+            Vytvorte si účet
         </a>
     </div>
 </section>

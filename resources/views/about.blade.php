@@ -11,29 +11,26 @@
             <h1 class="mb-4 text-center">About EventZo</h1>
 
             <p class="lead text-center">
-                EventZo is a modern web application designed for managing events quickly and efficiently.
+                EventZo je moderná webová aplikácia určená na rýchlu a efektívnu správu podujatí.
             </p>
 
             <hr class="my-4">
 
-            <h3>What is EventZo?</h3>
+            <h3>Prečo EventZo?</h3>
             <p>
-                EventZo allows organizers to create events, manage participants,
-                and generate digital tickets with QR codes. The system is built
-                using Laravel framework and Bootstrap 5 to ensure security,
-                responsiveness, and modern design.
+                EventZo umožňuje organizátorom vytvárať podujatia, spravovať účastníkov a generovať digitálne vstupenky s QR kódmi. Systém je vytvorený pomocou frameworku Laravel a Bootstrap 5, aby sa zabezpečila bezpečnosť, responzívnosť a moderný dizajn.
             </p>
 
-            <h3 class="mt-4">Main Features</h3>
+            <h3 class="mt-4">Hlavné funkcie</h3>
             <ul>
-                <li>User registration and authentication</li>
-                <li>Create and manage events</li>
-                <li>Participant registration</li>
-                <li>QR code ticket generation</li>
-                <li>Responsive design</li>
+                <li>Registrácia a autentifikácia použivateľov</li>
+                <li>Vytvorenie a manažovanie podujatí</li>
+                <li>Registrácia účastnikov</li>
+                <li>Generácia QR kódov</li>
+                
             </ul>
 
-            <h3 class="mt-4">Technologies Used</h3>
+            <h3 class="mt-4">Použité technológie</h3>
             <ul>
                 <li>Laravel (Backend)</li>
                 <li>MySQL (Database)</li>
@@ -43,7 +40,7 @@
 
             <div class="text-center mt-5">
                 <a href="{{ url('/') }}" class="btn btn-primary">
-                    Back to Home
+                    Späť home
                 </a>
             </div>
 
