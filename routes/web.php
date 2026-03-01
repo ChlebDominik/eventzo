@@ -53,3 +53,11 @@ Route::get('/events/{event}', [EventController::class, 'show'])->name('events.sh
 Route::get('/t/{ticket}', [TicketController::class, 'signed'])
     ->middleware('signed')
     ->name('tickets.signed');
+
+    Route::get('/about', function () {
+    return view('about');
+})->name('about');
+
+Route::get('/promo', function () {
+    return view('promo');
+})->name('promo');

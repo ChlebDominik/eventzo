@@ -23,9 +23,14 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('events.index') }}">Eventy</a>
                 </li>
-
+                <li class="nav-item">
+    <a class="nav-link" href="{{ route('about') }}">About</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ route('promo') }}">Promo</a>
+</li>
                 @auth
-                    {{-- DEBUG (môžeš dočasne nechať): --}}
+                    
                     {{-- <li class="nav-item"><span class="nav-link text-warning">role={{ auth()->user()->role }}</span></li> --}}
 
                     @if(auth()->user()->isOrganizer())
