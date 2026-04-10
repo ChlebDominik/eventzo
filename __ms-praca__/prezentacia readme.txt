@@ -1,0 +1,1 @@
+DObry den, prezentaciu este finishem kedze nemam na 100% hotovy projekt tak mi tak chyba zopar veci.

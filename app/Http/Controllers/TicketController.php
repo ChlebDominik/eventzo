@@ -11,7 +11,7 @@ class TicketController extends Controller
 {
     public function show(Request $request, Ticket $ticket)
     {
-        // ticket môže vidieť len jeho majiteľ (cez order->user_id)
+        
         $ticket->load('order.event', 'ticketType', 'checkin');
         abort_unless($ticket->order->user_id === $request->user()->id, 403);
 

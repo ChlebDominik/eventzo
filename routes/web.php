@@ -19,12 +19,12 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Events - public list
+// Events 
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
 
 Route::middleware('auth')->group(function () {
 
-    // Organizer-only CRUD (DÔLEŽITÉ: create/edit sú pred /events/{event})
+    // Organizer-only
     Route::middleware('organizer')->group(function () {
         Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
         Route::post('/events', [EventController::class, 'store'])->name('events.store');
@@ -41,15 +41,15 @@ Route::middleware('auth')->group(function () {
     // Ticket purchase
     Route::post('/events/{event}/buy', [TicketPurchaseController::class, 'buy'])->name('tickets.buy');
 
-    // Orders + Tickets (owner)
+    // Orders + Tickets 
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
 });
 
-// Event detail - MUSÍ BYŤ AŽ NA KONCI (wildcard)
+// Event detail 
 Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
 
-// Signed QR URL (public)
+// Signed QR URL 
 Route::get('/t/{ticket}', [TicketController::class, 'signed'])
     ->middleware('signed')
     ->name('tickets.signed');

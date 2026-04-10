@@ -26,7 +26,7 @@ class TicketPurchaseController extends Controller
 
         $qty = (int) $request->quantity;
 
-        // jednoduchá dostupnosť: počet vydaných lístkov nesmie prekročiť quantity
+        
         $sold = Ticket::whereHas('ticketType', fn($q) => $q->where('id', $type->id))->count();
         if ($sold + $qty > $type->quantity) {
             return back()->with('error', 'Nedostupný počet lístkov.');
@@ -40,7 +40,7 @@ class TicketPurchaseController extends Controller
             $order = Order::create([
                 'user_id' => $user->id,
                 'event_id' => $event->id,
-                'status' => 'paid', // bez payment gateway
+                'status' => 'paid', 
                 'total_cents' => $total,
             ]);
 

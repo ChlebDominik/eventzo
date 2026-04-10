@@ -4,7 +4,7 @@
 
 @section('content')
 
-<!-- HERO SECTION -->
+
 <section class="bg-dark text-white text-center py-5">
     <div class="container">
         <h1 class="display-4 fw-bold">EventZo</h1>
@@ -15,7 +15,7 @@
     </div>
 </section>
 
-<!-- FEATURES -->
+
 <section class="py-5">
     <div class="container">
         <div class="row text-center">
@@ -39,7 +39,7 @@
     </div>
 </section>
 
-<!-- WHY CHOOSE US -->
+
 <section class="bg-dark py-5">
     <div class="container text-center">
         <h2>Prečo si vybrať EventZo?</h2>
@@ -51,7 +51,7 @@ Je vytvorený s využitím moderných technológií ako Laravel a Bootstrap,
     </div>
 </section>
 
-<!-- CALL TO ACTION -->
+
 <section class="text-center py-5">
     <div class="container">
         <h2>Začnite spravovať svoje podujatia ešte dnes</h2>

@@ -47,7 +47,7 @@ class EventController extends Controller
 
         $event = Event::create($validated);
 
-        // default ticket type (aby hneď šlo kupovať)
+        
         $event->ticketTypes()->create([
             'name' => 'Standard',
             'price_cents' => 0,
