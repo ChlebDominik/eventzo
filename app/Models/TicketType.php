@@ -14,4 +14,21 @@ class TicketType extends Model
     {
         return $this->belongsTo(Event::class);
     }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
+    /** How many tickets of this type have been sold */
+    public function soldCount(): int
+    {
+        return $this->tickets()->count();
+    }
+
+    /** How many are still available */
+    public function availableCount(): int
+    {
+        return max(0, $this->quantity - $this->soldCount());
+    }
 }

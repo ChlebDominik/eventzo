@@ -1,25 +1,25 @@
 @extends('layouts.app')
-
+@section('title','Nový event')
 @section('content')
-<div class="card p-4">
-  <h4 class="mb-3">Vytvoriť nový event</h4>
-
-  @if ($errors->any())
-    <div class="alert alert-danger">
-      <ul class="mb-0">
-        @foreach ($errors->all() as $error)
-          <li>{{ $error }}</li>
-        @endforeach
-      </ul>
+<div style="max-width:760px;">
+    <div class="fade-up" style="margin-bottom:2rem;">
+        <p class="label">Organizátor</p>
+        <h1 class="heading" style="font-size:2.25rem;">Vytvoriť nový event</h1>
     </div>
-  @endif
-
-  <form action="{{ route('events.store') }}" method="POST" enctype="multipart/form-data">
-    @csrf
-
-    @include('events.form')
-
-    <button class="btn btn-primary mt-3">Uložiť event</button>
-  </form>
+    @if($errors->any())
+        <div class="alert alert-error fade-up">
+            @foreach($errors->all() as $e) <div>✕ {{ $e }}</div> @endforeach
+        </div>
+    @endif
+    <div class="card fade-up fade-up-1">
+        <div class="card-body">
+            <form action="{{ route('events.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @include('events.form')
+                <hr class="divider">
+                <button class="btn btn-primary btn-lg">Vytvoriť event →</button>
+            </form>
+        </div>
+    </div>
 </div>
 @endsection

@@ -7,6 +7,7 @@ use App\Http\Controllers\TicketPurchaseController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\CheckinController;
+use App\Http\Controllers\WalletController;
 
 Route::get('/', function () {
     return view('home');
@@ -36,10 +37,16 @@ Route::middleware('auth')->group(function () {
         // Check-in
         Route::get('/events/{event}/checkin', [CheckinController::class, 'index'])->name('checkin.index');
         Route::post('/events/{event}/checkin', [CheckinController::class, 'check'])->name('checkin.check');
+        Route::post('/events/{event}/checkin/scan', [CheckinController::class, 'scan'])->name('checkin.scan');
     });
 
     // Ticket purchase
     Route::post('/events/{event}/buy', [TicketPurchaseController::class, 'buy'])->name('tickets.buy');
+
+    // Wallet
+    Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
+    Route::get('/wallet/topup', [WalletController::class, 'showTopUp'])->name('wallet.topup');
+    Route::post('/wallet/topup', [WalletController::class, 'topUp']);
 
     // Orders + Tickets 
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');

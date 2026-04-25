@@ -16,7 +16,7 @@ class EventController extends Controller
 
     public function show(Event $event)
     {
-        $event->load('ticketTypes', 'organizer');
+        $event->load('ticketTypes.tickets', 'organizer');
         return view('events.show', compact('event'));
     }
 
@@ -31,12 +31,15 @@ class EventController extends Controller
         $this->authorize('create', Event::class);
 
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'location' => 'required|string|max:255',
-            'start_date' => 'required|date',
-            'capacity' => 'required|integer|min:1',
-            'image' => 'nullable|image|max:5120'
+            'title'                   => 'required|string|max:255',
+            'description'             => 'nullable|string',
+            'location'                => 'required|string|max:255',
+            'start_date'              => 'required|date',
+            'image'                   => 'nullable|image|max:5120',
+            'ticket_types'            => 'required|array|min:1',
+            'ticket_types.*.name'     => 'required|string|max:255',
+            'ticket_types.*.price'    => 'required|numeric|min:0',
+            'ticket_types.*.quantity' => 'required|integer|min:1',
         ]);
 
         $validated['organizer_id'] = $request->user()->id;
@@ -47,12 +50,13 @@ class EventController extends Controller
 
         $event = Event::create($validated);
 
-        
-        $event->ticketTypes()->create([
-            'name' => 'Standard',
-            'price_cents' => 0,
-            'quantity' => (int) $event->capacity,
-        ]);
+        foreach ($validated['ticket_types'] as $tt) {
+            $event->ticketTypes()->create([
+                'name'        => $tt['name'],
+                'price_cents' => (int) round($tt['price'] * 100),
+                'quantity'    => (int) $tt['quantity'],
+            ]);
+        }
 
         return redirect()->route('events.show', $event)->with('success', 'Event vytvorený.');
     }
@@ -60,6 +64,7 @@ class EventController extends Controller
     public function edit(Event $event)
     {
         $this->authorize('update', $event);
+        $event->load('ticketTypes');
         return view('events.edit', compact('event'));
     }
 
@@ -68,12 +73,15 @@ class EventController extends Controller
         $this->authorize('update', $event);
 
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'location' => 'required|string|max:255',
-            'start_date' => 'required|date',
-            'capacity' => 'required|integer|min:1',
-            'image' => 'nullable|image|max:5120'
+            'title'                   => 'required|string|max:255',
+            'description'             => 'nullable|string',
+            'location'                => 'required|string|max:255',
+            'start_date'              => 'required|date',
+            'image'                   => 'nullable|image|max:5120',
+            'ticket_types'            => 'required|array|min:1',
+            'ticket_types.*.name'     => 'required|string|max:255',
+            'ticket_types.*.price'    => 'required|numeric|min:0',
+            'ticket_types.*.quantity' => 'required|integer|min:1',
         ]);
 
         if ($request->hasFile('image')) {
@@ -84,6 +92,34 @@ class EventController extends Controller
         }
 
         $event->update($validated);
+
+        $submittedIds = [];
+
+        foreach ($validated['ticket_types'] as $tt) {
+            $id = $tt['id'] ?? null;
+
+            if ($id && $existing = $event->ticketTypes()->find($id)) {
+                $existing->update([
+                    'name'        => $tt['name'],
+                    'price_cents' => (int) round($tt['price'] * 100),
+                    'quantity'    => (int) $tt['quantity'],
+                ]);
+                $submittedIds[] = $existing->id;
+            } else {
+                $new = $event->ticketTypes()->create([
+                    'name'        => $tt['name'],
+                    'price_cents' => (int) round($tt['price'] * 100),
+                    'quantity'    => (int) $tt['quantity'],
+                ]);
+                $submittedIds[] = $new->id;
+            }
+        }
+
+        // Delete removed ticket types (only if no tickets sold for them)
+        $event->ticketTypes()
+              ->whereNotIn('id', $submittedIds)
+              ->whereDoesntHave('tickets')
+              ->delete();
 
         return redirect()->route('events.show', $event)->with('success', 'Event upravený.');
     }

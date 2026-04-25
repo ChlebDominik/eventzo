@@ -1,51 +1,38 @@
 @extends('layouts.app')
-
 @section('title', 'EventZo')
-
 @section('content')
-<div class="p-5 rounded-4 bg-black border border-secondary">
-    <h1 class="display-5 fw-bold mb-2">EventZo</h1>
-    <p class="lead text-secondary mb-4">
-        Vytváraj podujatia, spravuj registrácie a lístky s QR kódmi.
+
+{{-- HERO --}}
+<div class="fade-up" style="padding: 5rem 0 6rem; position: relative; text-align: center;">
+    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse, rgba(124,92,252,0.18) 0%, transparent 70%);pointer-events:none;"></div>
+    <div class="badge badge-violet fade-up" style="margin-bottom:1.5rem;">🎫 Platforma pre eventy na Slovensku</div>
+    <h1 class="heading fade-up fade-up-1" style="font-size: clamp(3rem,8vw,6.5rem); margin-bottom: 1.25rem; color: var(--text);">
+        Zažívaj<br><span style="color:var(--violet2);">eventy</span> naplno.
+    </h1>
+    <p class="fade-up fade-up-2" style="font-size:1.05rem;color:var(--muted2);max-width:480px;margin:0 auto 2.5rem;line-height:1.75;">
+        Nakupuj lístky, sleduj objednávky a vstup na podujatia jedným QR kódom.
     </p>
-
-    <div class="d-flex flex-wrap gap-2">
-        <a href="{{ route('events.index') }}" class="btn btn-primary">Zobraziť eventy</a>
-
-        @auth
-            @if(auth()->user()->isOrganizer())
-                <a href="{{ route('events.create') }}" class="btn btn-success">+ Vytvoriť event</a>
-            @endif
-        @else
-            <a href="{{ route('register') }}" class="btn btn-outline-light">Vytvoriť účet</a>
-        @endauth
+    <div class="fade-up fade-up-3" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="{{ route('events.index') }}" class="btn btn-primary btn-lg">Zobraziť eventy →</a>
+        @guest
+            <a href="{{ route('register') }}" class="btn btn-ghost btn-lg">Vytvoriť účet</a>
+        @endguest
     </div>
 </div>
 
-<div class="row mt-4 g-3">
-    <div class="col-md-4">
-        <div class="card bg-black border-secondary h-100">
-            <div class="card-body">
-                <h5 class="card-title">🎟️ Lístky + QR</h5>
-                <p class="text-secondary mb-0">Generovanie QR kódov pre vstup a check-in.</p>
-            </div>
-        </div>
+{{-- FEATURES --}}
+<div class="fade-up fade-up-4" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-top:2rem;">
+    @foreach([
+        ['🎟️','Digitálne lístky','QR kódy pre každý lístok, vždy po ruke.'],
+        ['📅','Správa eventov','Organizátori vytvárajú eventy v minútach.'],
+        ['✅','Rýchly check-in','Overenie vstupenky naskenovaním QR kódu.'],
+    ] as [$icon, $title, $desc])
+    <div style="background:var(--surface);padding:2rem 1.75rem;transition:background 0.2s;" onmouseenter="this.style.background='var(--surface2)'" onmouseleave="this.style.background='var(--surface)'">
+        <div style="font-size:1.75rem;margin-bottom:1rem;">{{ $icon }}</div>
+        <div style="font-weight:600;font-size:0.9rem;margin-bottom:0.5rem;color:var(--text);">{{ $title }}</div>
+        <div style="font-size:0.83rem;color:var(--muted);line-height:1.65;">{{ $desc }}</div>
     </div>
-    <div class="col-md-4">
-        <div class="card bg-black border-secondary h-100">
-            <div class="card-body">
-                <h5 class="card-title">📅 Správa eventov</h5>
-                <p class="text-secondary mb-0">CRUD pre eventy len pre organizátorov.</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card bg-black border-secondary h-100">
-            <div class="card-body">
-                <h5 class="card-title">✅ Check-in</h5>
-                <p class="text-secondary mb-0">Overenie lístkov a označenie ako použitý.</p>
-            </div>
-        </div>
-    </div>
+    @endforeach
 </div>
+
 @endsection
