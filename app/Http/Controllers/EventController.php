@@ -10,7 +10,9 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::orderBy('start_date', 'asc')->paginate(9);
+        $events = Event::where('start_date', '>', now())
+            ->orderBy('start_date', 'asc')
+            ->paginate(9);
         return view('events.index', compact('events'));
     }
 
@@ -34,7 +36,7 @@ class EventController extends Controller
             'title'                   => 'required|string|max:255',
             'description'             => 'nullable|string',
             'location'                => 'required|string|max:255',
-            'start_date'              => 'required|date',
+            'start_date'              => 'required|date|after:now',
             'image'                   => 'nullable|image|max:5120',
             'ticket_types'            => 'required|array|min:1',
             'ticket_types.*.name'     => 'required|string|max:255',
@@ -76,7 +78,7 @@ class EventController extends Controller
             'title'                   => 'required|string|max:255',
             'description'             => 'nullable|string',
             'location'                => 'required|string|max:255',
-            'start_date'              => 'required|date',
+            'start_date'              => 'required|date|after:now',
             'image'                   => 'nullable|image|max:5120',
             'ticket_types'            => 'required|array|min:1',
             'ticket_types.*.name'     => 'required|string|max:255',
