@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Musician;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -10,7 +11,8 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::where('start_date', '>', now())
+        $events = Event::with('ticketTypes', 'musicians')
+            ->where('start_date', '>', now())
             ->orderBy('start_date', 'asc')
             ->paginate(9);
         return view('events.index', compact('events'));
@@ -18,14 +20,15 @@ class EventController extends Controller
 
     public function show(Event $event)
     {
-        $event->load('ticketTypes.tickets', 'organizer');
+        $event->load('ticketTypes.tickets', 'organizer', 'musicians');
         return view('events.show', compact('event'));
     }
 
     public function create()
     {
         $this->authorize('create', Event::class);
-        return view('events.create');
+        $musicians = Musician::orderBy('name')->get();
+        return view('events.create', compact('musicians'));
     }
 
     public function store(Request $request)
@@ -42,14 +45,17 @@ class EventController extends Controller
             'ticket_types.*.name'     => 'required|string|max:255',
             'ticket_types.*.price'    => 'required|numeric|min:0',
             'ticket_types.*.quantity' => 'required|integer|min:1',
+            'musicians'               => 'nullable|array',
+            'musicians.*.id'          => 'nullable|exists:musicians,id',
+            'musicians.*.name'        => 'required_without:musicians.*.id|string|max:255',
+            'musicians.*.genre'       => 'nullable|string|max:255',
         ]);
-
-        $validated['organizer_id'] = $request->user()->id;
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('events', 'public');
         }
 
+        $validated['organizer_id'] = $request->user()->id;
         $event = Event::create($validated);
 
         foreach ($validated['ticket_types'] as $tt) {
@@ -60,14 +66,17 @@ class EventController extends Controller
             ]);
         }
 
+        $this->syncMusicians($event, $request->input('musicians', []));
+
         return redirect()->route('events.show', $event)->with('success', 'Event vytvorený.');
     }
 
     public function edit(Event $event)
     {
         $this->authorize('update', $event);
-        $event->load('ticketTypes');
-        return view('events.edit', compact('event'));
+        $event->load('ticketTypes', 'musicians');
+        $musicians = Musician::orderBy('name')->get();
+        return view('events.edit', compact('event', 'musicians'));
     }
 
     public function update(Request $request, Event $event)
@@ -84,22 +93,22 @@ class EventController extends Controller
             'ticket_types.*.name'     => 'required|string|max:255',
             'ticket_types.*.price'    => 'required|numeric|min:0',
             'ticket_types.*.quantity' => 'required|integer|min:1',
+            'musicians'               => 'nullable|array',
+            'musicians.*.id'          => 'nullable|exists:musicians,id',
+            'musicians.*.name'        => 'required_without:musicians.*.id|string|max:255',
+            'musicians.*.genre'       => 'nullable|string|max:255',
         ]);
 
         if ($request->hasFile('image')) {
-            if ($event->image) {
-                Storage::disk('public')->delete($event->image);
-            }
+            if ($event->image) Storage::disk('public')->delete($event->image);
             $validated['image'] = $request->file('image')->store('events', 'public');
         }
 
         $event->update($validated);
 
         $submittedIds = [];
-
         foreach ($validated['ticket_types'] as $tt) {
             $id = $tt['id'] ?? null;
-
             if ($id && $existing = $event->ticketTypes()->find($id)) {
                 $existing->update([
                     'name'        => $tt['name'],
@@ -116,12 +125,9 @@ class EventController extends Controller
                 $submittedIds[] = $new->id;
             }
         }
+        $event->ticketTypes()->whereNotIn('id', $submittedIds)->whereDoesntHave('tickets')->delete();
 
-        // Delete removed ticket types (only if no tickets sold for them)
-        $event->ticketTypes()
-              ->whereNotIn('id', $submittedIds)
-              ->whereDoesntHave('tickets')
-              ->delete();
+        $this->syncMusicians($event, $request->input('musicians', []));
 
         return redirect()->route('events.show', $event)->with('success', 'Event upravený.');
     }
@@ -129,12 +135,29 @@ class EventController extends Controller
     public function destroy(Event $event)
     {
         $this->authorize('delete', $event);
-
-        if ($event->image) {
-            Storage::disk('public')->delete($event->image);
-        }
-
+        if ($event->image) Storage::disk('public')->delete($event->image);
         $event->delete();
         return redirect()->route('events.index')->with('success', 'Event odstránený.');
+    }
+
+    /** Sync musicians — create new ones if needed, then attach all with order */
+    private function syncMusicians(Event $event, array $musicians): void
+    {
+        $syncData = [];
+
+        foreach ($musicians as $i => $m) {
+            if (!empty($m['id'])) {
+                $syncData[$m['id']] = ['order' => $i];
+            } elseif (!empty($m['name'])) {
+                // New custom musician — create and attach
+                $musician = Musician::firstOrCreate(
+                    ['name' => trim($m['name'])],
+                    ['genre' => trim($m['genre'] ?? '')]
+                );
+                $syncData[$musician->id] = ['order' => $i];
+            }
+        }
+
+        $event->musicians()->sync($syncData);
     }
 }

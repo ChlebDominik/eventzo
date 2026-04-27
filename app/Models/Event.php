@@ -7,12 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Event extends Model
 {
     protected $fillable = [
-        'organizer_id',
-        'title',
-        'description',
-        'location',
-        'start_date',
-        'image',
+        'organizer_id', 'title', 'description', 'location',
+        'start_date', 'image',
     ];
 
     protected $casts = [
@@ -22,6 +18,11 @@ class Event extends Model
     public function organizer()
     {
         return $this->belongsTo(User::class, 'organizer_id');
+    }
+
+    public function musicians()
+    {
+        return $this->belongsToMany(Musician::class)->withPivot('order')->orderBy('event_musician.order');
     }
 
     public function ticketTypes()
@@ -34,19 +35,16 @@ class Event extends Model
         return $this->hasMany(Order::class);
     }
 
-    /** Total capacity = sum of all ticket type quantities */
     public function totalCapacity(): int
     {
         return $this->ticketTypes->sum('quantity');
     }
 
-    /** Total tickets sold across all ticket types */
     public function totalSold(): int
     {
         return $this->ticketTypes->sum(fn($t) => $t->soldCount());
     }
 
-    /** Remaining tickets available for purchase */
     public function totalAvailable(): int
     {
         return max(0, $this->totalCapacity() - $this->totalSold());

@@ -31,7 +31,48 @@
     @endif
 </div>
 
-{{-- TICKET TYPES --}}
+{{-- ── MUSICIANS ─────────────────────────────────────────────── --}}
+<hr class="divider">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+    <div>
+        <p class="label" style="margin-bottom:0.2rem;">Vystupujúci hudobníci</p>
+        <p style="font-size:0.78rem;color:var(--muted);">Vyber zo zoznamu alebo zadaj vlastného. Nie je povinné.</p>
+    </div>
+    <button type="button" class="btn btn-ghost btn-sm" id="addMusician">+ Pridať hudobníka</button>
+</div>
+
+<div id="musicianContainer">
+@if(isset($event) && $event->musicians->count())
+    @foreach($event->musicians as $i => $musician)
+    <div class="tt-row musician-row">
+        <input type="hidden" name="musicians[{{ $i }}][id]" value="{{ $musician->id }}">
+        <div class="field" style="margin:0;">
+            <label class="label">Meno</label>
+            <input type="text" name="musicians[{{ $i }}][name]" class="input" value="{{ $musician->name }}" placeholder="Meno hudobníka" required>
+        </div>
+        <div class="field" style="margin:0;">
+            <label class="label">Žáner</label>
+            <input type="text" name="musicians[{{ $i }}][genre]" class="input" value="{{ $musician->genre }}" placeholder="napr. Rock, Pop…">
+        </div>
+        <div class="field" style="margin:0;">
+            <label class="label">Vybrať existujúceho</label>
+            <select class="input musician-preset" data-index="{{ $i }}">
+                <option value="">— vlastný —</option>
+                @foreach($musicians as $m)
+                    <option value="{{ $m->id }}" data-name="{{ $m->name }}" data-genre="{{ $m->genre }}"
+                        {{ $musician->id == $m->id ? 'selected' : '' }}>
+                        {{ $m->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <button type="button" class="tt-remove musician-remove">✕</button>
+    </div>
+    @endforeach
+@endif
+</div>
+
+{{-- ── TICKET TYPES ──────────────────────────────────────────── --}}
 <hr class="divider">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
     <div>
@@ -82,35 +123,95 @@
 
 <script>
 (function(){
-    const c = document.getElementById('ttContainer');
+    // ── Ticket types ──
+    const ttC = document.getElementById('ttContainer');
     document.getElementById('addTT').addEventListener('click', () => {
-        const i = c.querySelectorAll('.tt-row').length;
-        c.insertAdjacentHTML('beforeend', `
+        const i = ttC.querySelectorAll('.tt-row').length;
+        ttC.insertAdjacentHTML('beforeend', `
         <div class="tt-row">
-            <div class="field" style="margin:0;">
-                <label class="label">Názov</label>
-                <input type="text" name="ticket_types[${i}][name]" class="input" placeholder="VIP, Standard…" required>
-            </div>
-            <div class="field" style="margin:0;">
-                <label class="label">Cena (€)</label>
-                <input type="number" name="ticket_types[${i}][price]" class="input" step="0.01" min="0" value="0.00" required>
-            </div>
-            <div class="field" style="margin:0;">
-                <label class="label">Počet kusov</label>
-                <input type="number" name="ticket_types[${i}][quantity]" class="input" min="1" value="100" required>
-            </div>
+            <div class="field" style="margin:0;"><label class="label">Názov</label>
+                <input type="text" name="ticket_types[${i}][name]" class="input" placeholder="VIP, Standard…" required></div>
+            <div class="field" style="margin:0;"><label class="label">Cena (€)</label>
+                <input type="number" name="ticket_types[${i}][price]" class="input" step="0.01" min="0" value="0.00" required></div>
+            <div class="field" style="margin:0;"><label class="label">Počet kusov</label>
+                <input type="number" name="ticket_types[${i}][quantity]" class="input" min="1" value="100" required></div>
             <button type="button" class="tt-remove">✕</button>
         </div>`);
     });
-    c.addEventListener('click', e => {
-        if(e.target.classList.contains('tt-remove')){
-            const rows = c.querySelectorAll('.tt-row');
-            if(rows.length > 1){ e.target.closest('.tt-row').remove(); reindex(); }
+    ttC.addEventListener('click', e => {
+        if (e.target.classList.contains('tt-remove')) {
+            const rows = ttC.querySelectorAll('.tt-row');
+            if (rows.length > 1) { e.target.closest('.tt-row').remove(); reindex(ttC, 'ticket_types'); }
             else alert('Musíš mať aspoň jeden typ lístka.');
         }
     });
-    function reindex(){
-        c.querySelectorAll('.tt-row').forEach((row,i) => {
+
+    // ── Musicians ──
+    const musC = document.getElementById('musicianContainer');
+    const allMusicians = @json($musicians ?? []);
+
+    function buildPresetOptions(selectedId = '') {
+        let opts = '<option value="">— vlastný —</option>';
+        allMusicians.forEach(m => {
+            opts += `<option value="${m.id}" data-name="${m.name}" data-genre="${m.genre ?? ''}" ${selectedId == m.id ? 'selected' : ''}>${m.name}</option>`;
+        });
+        return opts;
+    }
+
+    function makeMusRow(i) {
+        return `
+        <div class="tt-row musician-row" style="grid-template-columns:1fr 1fr 1fr 44px;">
+            <div class="field" style="margin:0;"><label class="label">Meno</label>
+                <input type="text" name="musicians[${i}][name]" class="input" placeholder="Meno hudobníka" required></div>
+            <div class="field" style="margin:0;"><label class="label">Žáner</label>
+                <input type="text" name="musicians[${i}][genre]" class="input" placeholder="napr. Rock, Pop…"></div>
+            <div class="field" style="margin:0;"><label class="label">Vybrať existujúceho</label>
+                <select class="input musician-preset" data-index="${i}">${buildPresetOptions()}</select></div>
+            <button type="button" class="tt-remove musician-remove">✕</button>
+        </div>`;
+    }
+
+    document.getElementById('addMusician').addEventListener('click', () => {
+        const i = musC.querySelectorAll('.musician-row').length;
+        musC.insertAdjacentHTML('beforeend', makeMusRow(i));
+    });
+
+    musC.addEventListener('click', e => {
+        if (e.target.classList.contains('musician-remove')) {
+            e.target.closest('.musician-row').remove();
+            reindex(musC, 'musicians');
+        }
+    });
+
+    // When preset selected — fill name/genre fields and set hidden id
+    musC.addEventListener('change', e => {
+        if (!e.target.classList.contains('musician-preset')) return;
+        const row = e.target.closest('.musician-row');
+        const opt = e.target.selectedOptions[0];
+        const nameInput  = row.querySelector('input[name*="[name]"]');
+        const genreInput = row.querySelector('input[name*="[genre]"]');
+        const idInput    = row.querySelector('input[type="hidden"]');
+
+        if (opt.value) {
+            nameInput.value  = opt.dataset.name;
+            genreInput.value = opt.dataset.genre;
+            if (idInput) idInput.value = opt.value;
+            else {
+                const hi = document.createElement('input');
+                hi.type = 'hidden';
+                hi.name = nameInput.name.replace('[name]', '[id]');
+                hi.value = opt.value;
+                row.appendChild(hi);
+            }
+        } else {
+            nameInput.value = '';
+            genreInput.value = '';
+            if (idInput) idInput.value = '';
+        }
+    });
+
+    function reindex(container, prefix) {
+        container.querySelectorAll('.tt-row').forEach((row, i) => {
             row.querySelectorAll('[name]').forEach(el => {
                 el.name = el.name.replace(/\[\d+\]/, `[${i}]`);
             });

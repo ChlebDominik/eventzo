@@ -47,6 +47,26 @@
         </div>
         @endif
 
+        {{-- MUSICIANS --}}
+        @if($event->musicians->count())
+        <div class="fade-up fade-up-3" style="margin-bottom:2rem;">
+            <p class="label" style="margin-bottom:1rem;">Vystupujúci hudobníci</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.75rem;">
+                @foreach($event->musicians as $musician)
+                <div style="display:flex;align-items:center;gap:0.85rem;padding:0.9rem 1.1rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);transition:border-color 0.2s;" onmouseenter="this.style.borderColor='var(--border2)'" onmouseleave="this.style.borderColor='var(--border)'">
+                    <div style="width:38px;height:38px;border-radius:50%;background:var(--violet-dim);border:1px solid rgba(124,92,252,0.3);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">🎵</div>
+                    <div>
+                        <p style="font-weight:600;font-size:0.9rem;margin-bottom:0.15rem;">{{ $musician->name }}</p>
+                        @if($musician->genre)
+                            <p style="font-size:0.75rem;color:var(--muted);">{{ $musician->genre }}</p>
+                        @endif
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
         @if($event->ticketTypes->count())
         <div class="fade-up fade-up-3">
             <p class="label" style="margin-bottom:1rem;">Typy lístkov</p>

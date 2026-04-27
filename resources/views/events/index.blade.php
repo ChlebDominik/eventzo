@@ -40,6 +40,14 @@
                 <span>📍 {{ $event->location }}</span>
                 <span style="color:var(--border2);">·</span>
                 <span>📅 {{ $event->start_date->format('d.m.Y H:i') }}</span>
+                @if($event->musician)
+                    <span style="color:var(--border2);">·</span>
+                    <span>🎵 {{ $event->musician->name }}</span>
+                @endif
+                @if($event->musician)
+                    <span style="color:var(--border2);">·</span>
+                    <span>🎵 {{ $event->musician->name }}</span>
+                @endif
                 @if($event->ticketTypes->count())
                     <span style="color:var(--border2);">·</span>
                     <span>🎟 {{ $event->totalAvailable() }}/{{ $event->totalCapacity() }} miest</span>
